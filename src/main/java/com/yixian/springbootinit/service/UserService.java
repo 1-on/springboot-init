@@ -32,4 +32,7 @@ public interface UserService extends IService<User> {
      */
     LoginUserVO userLogin(String userAccount, String userPassword);
 
+    User getLoginUser();
+
+    LoginUserVO getLoginUserVo(User user);
 }

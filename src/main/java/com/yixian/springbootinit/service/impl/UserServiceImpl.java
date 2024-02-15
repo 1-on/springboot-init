@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yixian.springbootinit.constant.JwtClaimsConstant;
 import com.yixian.springbootinit.constant.MessageConstant;
+import com.yixian.springbootinit.context.BaseContext;
 import com.yixian.springbootinit.exception.BaseException;
 import com.yixian.springbootinit.model.enums.UserRoleEnum;
 import com.yixian.springbootinit.model.vo.LoginUserVO;
@@ -33,6 +34,7 @@ import java.util.Objects;
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
+
 
     @Autowired
     private JwtProperties jwtProperties;
@@ -112,19 +114,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         claims.put(JwtClaimsConstant.USER_ID, user.getId());
         String token = JwtUtil.createJWT(jwtProperties.getSecretKey(), jwtProperties.getTtl(), claims);
 
-        LoginUserVO loginUserVO = LoginUserVO.builder()
-                .id(user.getId())
-                .userName(user.getUserName())
-                .userAvatar(user.getUserAvatar())
-                .userProfile(user.getUserProfile())
-                .userRole(user.getUserRole())
-                .createTime(user.getCreateTime())
-                .updateTime(user.getUpdateTime())
-                .token(token)
-                .build();
+        LoginUserVO loginUserVO = new LoginUserVO();
+        BeanUtils.copyProperties(user, loginUserVO);
+        loginUserVO.setToken(token);
 
         return loginUserVO;
 
+    }
+
+    @Override
+    public User getLoginUser() {
+        Long userId = BaseContext.getCurrentId();
+        if (userId == null) {
+            throw new BaseException(MessageConstant.NOT_LOGIN);
+        }
+        User currentUser = this.getById(userId);
+        if (currentUser == null) {
+            throw new BaseException(MessageConstant.NOT_LOGIN);
+        }
+        return currentUser;
+    }
+
+    @Override
+    public LoginUserVO getLoginUserVo(User user) {
+        if (user == null) {
+            return null;
+        }
+        LoginUserVO loginUserVO = new LoginUserVO();
+        BeanUtils.copyProperties(user, loginUserVO);
+        return loginUserVO;
     }
 }
 

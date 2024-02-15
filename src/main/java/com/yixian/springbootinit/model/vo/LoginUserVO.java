@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@Builder
 public class LoginUserVO implements Serializable {
     /**
      * id

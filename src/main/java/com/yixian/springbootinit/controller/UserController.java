@@ -5,6 +5,7 @@ import com.yixian.springbootinit.constant.MessageConstant;
 import com.yixian.springbootinit.exception.BaseException;
 import com.yixian.springbootinit.model.dto.user.UserLoginDTO;
 import com.yixian.springbootinit.model.dto.user.UserRegisterDTO;
+import com.yixian.springbootinit.model.entity.User;
 import com.yixian.springbootinit.model.vo.LoginUserVO;
 import com.yixian.springbootinit.service.UserService;
 import jakarta.annotation.Resource;
@@ -60,6 +61,12 @@ public class UserController {
         }
         LoginUserVO loginUserVO = userService.userLogin(userAccount, userPassword);
         return Result.success(loginUserVO);
+    }
+
+    @GetMapping("/get/login")
+    public Result<LoginUserVO> getLoginUser() {
+        User user = userService.getLoginUser();
+        return Result.success(userService.getLoginUserVo(user));
     }
 
 
