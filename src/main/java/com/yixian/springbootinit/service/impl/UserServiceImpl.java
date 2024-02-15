@@ -1,19 +1,26 @@
 package com.yixian.springbootinit.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yixian.springbootinit.common.PageRequest;
+import com.yixian.springbootinit.constant.CommonConstant;
 import com.yixian.springbootinit.constant.JwtClaimsConstant;
 import com.yixian.springbootinit.constant.MessageConstant;
 import com.yixian.springbootinit.context.BaseContext;
 import com.yixian.springbootinit.exception.BaseException;
+import com.yixian.springbootinit.model.dto.user.UserAddDTO;
+import com.yixian.springbootinit.model.dto.user.UserQueryDTO;
 import com.yixian.springbootinit.model.enums.UserRoleEnum;
 import com.yixian.springbootinit.model.vo.LoginUserVO;
+import com.yixian.springbootinit.model.vo.UserVO;
 import com.yixian.springbootinit.properties.JwtProperties;
 import com.yixian.springbootinit.service.UserService;
 import com.yixian.springbootinit.model.entity.User;
 import com.yixian.springbootinit.mapper.UserMapper;
 import com.yixian.springbootinit.utils.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
+import com.yixian.springbootinit.utils.SqlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -21,9 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author jiangfei
@@ -143,6 +149,67 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         LoginUserVO loginUserVO = new LoginUserVO();
         BeanUtils.copyProperties(user, loginUserVO);
         return loginUserVO;
+    }
+
+    /**
+     * 新增用户
+     *
+     * @param userAddDTO 用户信息
+     * @return
+     */
+    @Override
+    public Long addUser(UserAddDTO userAddDTO) {
+        User user = new User();
+        BeanUtils.copyProperties(userAddDTO, user);
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + CommonConstant.DEFAULT_PASSWORD).getBytes());
+        user.setUserPassword(encryptPassword);
+        boolean result = this.save(user);
+        if (!result) {
+            throw new BaseException(MessageConstant.OPERATION_ERROR);
+        }
+        return user.getId();
+    }
+
+    @Override
+    public UserVO getUserVO(User user) {
+        if (user == null) {
+            return null;
+        }
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO);
+        return userVO;
+    }
+
+    @Override
+    public Wrapper<User> getQueryWrapper(UserQueryDTO userQueryDTO) {
+        if (userQueryDTO == null) {
+            throw new BaseException(MessageConstant.REQUEST_PARAMS_ERROR);
+        }
+        Long id = userQueryDTO.getId();
+        String unionId = userQueryDTO.getUnionId();
+        String mpOpenId = userQueryDTO.getMpOpenId();
+        String userName = userQueryDTO.getUserName();
+        String userProfile = userQueryDTO.getUserProfile();
+        String userRole = userQueryDTO.getUserRole();
+        String sortField = userQueryDTO.getSortField();
+        String sortOrder = userQueryDTO.getSortOrder();
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(id != null, "id", id);
+        queryWrapper.eq(StringUtils.isNotBlank(unionId), "unionId", unionId);
+        queryWrapper.eq(StringUtils.isNotBlank(mpOpenId), "mpOpenId", mpOpenId);
+        queryWrapper.eq(StringUtils.isNotBlank(userRole), "userRole", userRole);
+        queryWrapper.like(StringUtils.isNotBlank(userProfile), "userProfile", userProfile);
+        queryWrapper.like(StringUtils.isNotBlank(userName), "userName", userName);
+        queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
+        return queryWrapper;
+    }
+
+    @Override
+    public List<UserVO> getUserVO(List<User> userList) {
+        if (CollUtil.isEmpty(userList)) {
+            return new ArrayList<>();
+        }
+        return userList.stream().map(this::getUserVO).collect(Collectors.toList());
     }
 }
 

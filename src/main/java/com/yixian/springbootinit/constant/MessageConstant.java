@@ -12,4 +12,5 @@ public class MessageConstant {
     public static final String ACCOUNT_NOT_FOUND = "账号不存在";
     public static final String ACCOUNT_BAN = "账号被封禁";
     public static final String NOT_LOGIN = "未登录";
+    public static final String OPERATION_ERROR = "操作失败";
 }
