@@ -159,8 +159,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      */
     @Override
     public Long addUser(UserAddDTO userAddDTO) {
+        String userAccount = userAddDTO.getUserAccount();
+        String userRole = userAddDTO.getUserRole();
+        // 账号过短
+        if (userAccount.length() < 4) {
+            throw new BaseException(MessageConstant.ACCOUNT_TOO_SHORT);
+        }
+        // 用户角色不合法
+        if (UserRoleEnum.getEnumByValue(userRole) == null) {
+            throw new BaseException(MessageConstant.ILLEGAL_USER_ROLE);
+        }
         User user = new User();
         BeanUtils.copyProperties(userAddDTO, user);
+        // 密码加密
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + CommonConstant.DEFAULT_PASSWORD).getBytes());
         user.setUserPassword(encryptPassword);
         boolean result = this.save(user);

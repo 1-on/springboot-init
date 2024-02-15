@@ -1,7 +1,10 @@
 package com.yixian.springbootinit.model.dto.user;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
+@Data
 public class UserAddDTO implements Serializable {
 
     /**

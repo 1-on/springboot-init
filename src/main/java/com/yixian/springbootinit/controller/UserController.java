@@ -8,6 +8,7 @@ import com.yixian.springbootinit.context.BaseContext;
 import com.yixian.springbootinit.exception.BaseException;
 import com.yixian.springbootinit.model.dto.user.*;
 import com.yixian.springbootinit.model.entity.User;
+import com.yixian.springbootinit.model.enums.UserRoleEnum;
 import com.yixian.springbootinit.model.vo.LoginUserVO;
 import com.yixian.springbootinit.model.vo.UserVO;
 import com.yixian.springbootinit.service.UserService;
@@ -126,6 +127,10 @@ public class UserController {
     public Result<Boolean> updateUser(@RequestBody UserUpdateDTO userUpdateDTO) {
         if (userUpdateDTO == null) {
             throw new BaseException(MessageConstant.REQUEST_PARAMS_ERROR);
+        }
+        // 用户角色不合法
+        if (UserRoleEnum.getEnumByValue(userUpdateDTO.getUserRole()) == null) {
+            throw new BaseException(MessageConstant.ILLEGAL_USER_ROLE);
         }
         User user = new User();
         BeanUtils.copyProperties(userUpdateDTO, user);
