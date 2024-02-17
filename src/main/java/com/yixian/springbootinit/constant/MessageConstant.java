@@ -14,4 +14,5 @@ public class MessageConstant {
     public static final String NOT_LOGIN = "未登录";
     public static final String OPERATION_ERROR = "操作失败";
     public static final String ILLEGAL_USER_ROLE = "用户角色不合法";
+    public static final String UPLOAD_FAILED = "文件上传失败";
 }

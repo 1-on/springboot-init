@@ -46,3 +46,8 @@ yixian:
     ttl: 7200000
     # 配置token名称
     token-name: token
+  alioss:
+    endpoint: your_endpoint
+    access-key-id: your_access-key-id
+    access-key-secret: your_access-key-secret
+    bucket-name: your_bucket-name
