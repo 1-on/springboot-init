@@ -15,4 +15,5 @@ public class MessageConstant {
     public static final String OPERATION_ERROR = "操作失败";
     public static final String ILLEGAL_USER_ROLE = "用户角色不合法";
     public static final String UPLOAD_FAILED = "文件上传失败";
+    public static final String TOO_MANY_REQUEST = "请求过于频繁";
 }
