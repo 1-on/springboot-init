@@ -28,9 +28,9 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @GetMapping("/ok")
+    @GetMapping(value = "/ok")
     public String ok() {
-        return "ok";
+        return "ok成功";
     }
 
     /**
