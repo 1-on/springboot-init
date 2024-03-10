@@ -11,7 +11,7 @@ server:
 # mybatis-plus 配置
 mybatis-plus:
   configuration:
-    map-underscore-to-camel-case: true
+    map-underscore-to-camel-case: false
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
@@ -43,7 +43,7 @@ yixian:
     # 配置jwt密钥
     secret-key: yixian
     # 配置jwt超时时间
-    ttl: 7200000
+    ttl: 86400000
     # 配置token名称
     token-name: token
   alioss:

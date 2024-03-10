@@ -17,4 +17,9 @@ public class MessageConstant {
     public static final String UPLOAD_FAILED = "文件上传失败";
     public static final String TOO_MANY_REQUEST = "请求过于频繁";
     public static final String SYSTEM_ERROR = "系统错误";
+    public static final String PARAMS_ERROR = "参数错误";
+    public static final String TITLE_TOO_LONG = "标题过长";
+    public static final String CONTENT_TOO_LONG = "内容过长";
+    public static final String NOT_FOUND_ERROR = "请求数据不存在";
+    public static final String NO_AUTH_ERROR = "无权限";
 }
